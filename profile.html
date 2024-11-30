@@ -1,0 +1,120 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<div class="header">
+    <img src="https://placehold.jp/35x35.png">
+    <hr class="divider">
+</div>
+<div id="login-div">
+  <h1>Login Page</h1>
+  <form id="login-form">
+    <input type="text" id="username" name="username" required placeholder="Username: " class="int-box"><br><br>
+    <input type="password" id="password" name="password" required placeholder="Password: " class="int-box"><br><br>
+    <button value="Login" class="button-85">Login</button>
+  </form>
+  <p>If Don't Have Account Click <a href="signup.html">Here</a>
+</div>
+
+<div id="content-div" style="display:none;">
+  <h1>Welcome, <span id="username-display"></span>!</h1>
+  
+  <div class="user-info">
+    <h2>User Information</h2>
+    <p><strong>Name:</strong> <span id="user-name"></span></p>
+    <p><strong>Coins:</strong> <span id="user-coins"></span></p>
+    <p><strong>Game ID:</strong> <span id="user-game-id"></span></p>
+    <p><strong>Game Name:</strong> <span id="user-game-name"></span></p>
+    <button id="edit-btn">Edit Information</button>
+  </div>
+
+  <div class="edit-form" id="edit-form">
+    <h2>Edit User Information</h2>
+    <form id="update-form">
+      <label for="edit-game-id">Game ID:</label>
+      <input type="text" id="edit-game-id" name="game-id">
+      
+      <label for="edit-game-name">Game Name:</label>
+      <input type="text" id="edit-game-name" name="game-name">
+      
+      <button type="submit">Save Changes</button>
+      <button type="button" id="cancel-edit">Cancel</button>
+    </form>
+  </div>
+</div>
+<script src="profile.js"></script>
+<style>
+  *{ overflow: hidden; }
+  body{ margin: 0; font-family: Arial, sans-serif; background-color: #121212; color: #fff; }
+  .header{ display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background-color: #1f1f1f; margin-bottom: 10px; }
+  .divider{ flex-grow: 1; border: none; background: #00ff7f; margin-left: 10px; }
+  .header img{ border-radius: 125px; }
+  #login-div{ display: flex; flex-direction: column; background-color: #1f1f1f; margin-left: 10px; margin-right: 10px; border-radius: 10px; padding: 10px 20px;}
+  .int-box{ width: 90%; padding: 6px; outline: none; padding-left: 10px; border-radius: 25px; }
+
+/* CSS */
+.button-85 {
+  padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-85:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button-85 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button-85 {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.button-85:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+</style>

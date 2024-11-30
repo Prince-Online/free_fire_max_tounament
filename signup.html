@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Data with OTP</title>
+</head>
+<body>
+    <h2>Submit Your Game Information</h2>
+    <form id="gameForm" onsubmit="submitForm(event)">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="mobilenumber">Mobile Number:</label>
+        <input type="tel" id="mobilenumber" name="mobilenumber" required><br><br>
+
+        <label for="gameid">Game ID:</label>
+        <input type="text" id="gameid" name="gameid" required><br><br>
+
+        <label for="gamename">Game Name:</label>
+        <input type="text" id="gamename" name="gamename" required><br><br>
+
+        <label for="password">Password:</label> <!-- New password input -->
+        <input type="password" id="password" name="password" required><br><br> <!-- Added password field -->
+
+        <button type="button" id="getOtpButton" onclick="generateOtp()">Get OTP</button>
+    </form>
+
+    <div id="otpSection" style="display:none;">
+        <h3>Enter OTP</h3>
+        <label for="otp">OTP:</label>
+        <input type="text" id="otp" name="otp" required><br><br>
+        <button type="button" onclick="verifyOtp()">Verify OTP</button>
+    </div>
+
+    <script>
+        let otpGenerated = null;
+
+        function generateOtp() {
+            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+
+            // Check if username or email already exists
+            fetch(`https://script.google.com/macros/s/AKfycbyyjQIsAOEYetSmHiTQbx3mkACrkYWIWZugWW3nBn_yyBLY_Cavh__NSymjs42fUNkh/exec?username=${username}&email=${email}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.exists) {
+                    alert('Username or Email already exists. Please choose a different one.');
+                } else {
+                    // Generate a random 6-digit OTP
+                    otpGenerated = Math.floor(100000 + Math.random() * 900000);
+                    document.getElementById("otpSection").style.display = "block";
+
+                    // Send OTP to user's email
+                    const otpData = {
+                        otp: otpGenerated.toString(),
+                        username: username,
+                        email: email
+                    };
+
+                    fetch('https://script.google.com/macros/s/AKfycbyyjQIsAOEYetSmHiTQbx3mkACrkYWIWZugWW3nBn_yyBLY_Cavh__NSymjs42fUNkh/exec', {
+                        method: 'POST',
+                        body: JSON.stringify(otpData),
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        alert("OTP has been sent to your email.");
+                    })
+                    .catch(error => {
+                        alert("Error: " + error);
+                    });
+                }
+            })
+            .catch(error => {
+                alert("Error checking username/email: " + error);
+            });
+        }
+
+        function verifyOtp() {
+            const otpEntered = document.getElementById("otp").value;
+            if (otpEntered === otpGenerated.toString()) {
+                // OTP is correct, now submit the game data
+                const formData = new FormData(document.getElementById('gameForm'));
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                fetch('https://script.google.com/macros/s/AKfycbyyjQIsAOEYetSmHiTQbx3mkACrkYWIWZugWW3nBn_yyBLY_Cavh__NSymjs42fUNkh/exec', {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                })
+                .then(response => response.json())
+                .then(result => {
+                    alert('Data submitted successfully!');
+                    
+                    // Send a thank you email to the user after successful signup
+                    sendThankYouEmail(data.email);
+
+                    // Reload the page after successful submission
+                    window.location.reload();
+                })
+                .catch(error => {
+                    alert('Error: ' + error);
+                });
+            } else {
+                alert('OTP is incorrect. Please try again.');
+            }
+        }
+
+        // Send a thank you email after successful signup
+        function sendThankYouEmail(userEmail) {
+            fetch(`https://script.google.com/macros/s/AKfycbyyjQIsAOEYetSmHiTQbx3mkACrkYWIWZugWW3nBn_yyBLY_Cavh__NSymjs42fUNkh/exec?thankYou=true&email=${userEmail}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Thank you email has been sent to the user!');
+            })
+            .catch(error => {
+                console.log('Error sending thank you email: ' + error);
+            });
+        }
+    </script>
+</body>
+</html>
